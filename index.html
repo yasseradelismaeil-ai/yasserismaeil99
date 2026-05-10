@@ -6,6 +6,14 @@
     <title>ياسر إسماعيل - بورتفوليو متكامل التحكم</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* إضافة خط ثمانية المخصص للعناوين */
+        @font-face {
+            font-family: 'Thmanyah Sans';
+            src: url('fonts/thmanyahsans-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-display: swap;
+        }
+
         /* RESET & GLOBAL */
         * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.2s ease; }
         body { font-family: 'Tajawal', sans-serif; overflow: hidden; background: #f5f5f5; }
@@ -32,7 +40,7 @@
         .dynamic-item { background: #2a2a3a; padding: 8px; margin: 8px 0; border-radius: 8px; }
         .dynamic-item input, .dynamic-item textarea { width: 100%; margin-bottom: 5px; }
         .delete-btn { background: #d9534f; color: white; padding: 3px 8px; border-radius: 20px; margin-top: 5px; cursor: pointer; border: none; }
-        /* CSS Variables (نفس السابق) */
+        /* CSS Variables */
         :root {
             --bg-light: #ffffff; --bg-dark: #0a0a0a; --text-light: #1a1a1a; --text-dark: #f0f0f0; --primary: #25e191;
             --header-bg-light: rgba(255,255,255,0.3); --header-text-light: #1a1a1a; --header-border: none; --header-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -56,7 +64,7 @@
             --counter-title-size: 2rem; --counter-desc-size: 1rem; --counter-number-size: 2rem;
             --counter-bg-light: transparent; --counter-bg-dark: transparent; --counter-gap-bottom: 20px; --counter-btn-margin-top: 30px;
         }
-        /* Preview styles (نفس السابق) */
+        /* Preview styles */
         .glass-header { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: var(--header-padding); border-radius: var(--header-radius); font-family: var(--header-font); display: flex; gap: 40px; z-index: 1000; background: var(--header-bg-light); border: var(--header-border); box-shadow: var(--header-shadow); transition: transform 0.3s, opacity 0.3s; }
         .dark-mode .glass-header { background: var(--header-bg-dark); }
         .glass-header.hide { transform: translateX(-50%) translateY(-150%); opacity: 0; visibility: hidden; }
@@ -99,6 +107,13 @@
         .service-title-new { color: var(--primary); }
         .service-details-new { max-height: 0; overflow: hidden; transition: 0.4s; padding-right: 20px; }
         .service-details-new.active { max-height: 300px; padding-top: 15px; }
+        /* عناوين السيكشنات - تم تطبيق خط ثمانية */
+        .section-title {
+            font-size: var(--section-title-size);
+            margin-bottom: 15px;
+            font-family: 'Thmanyah Sans', var(--font-head), sans-serif;
+            text-align: center;
+        }
         .counters-section { text-align: center; margin: 60px 0; padding: 40px 20px; border-radius: 30px; background: var(--counter-bg-light); }
         .dark-mode .counters-section { background: var(--counter-bg-dark); }
         .counters-title { font-size: var(--counter-title-size); margin-bottom: 15px; }
@@ -159,19 +174,19 @@
 <div class="split-container">
     <div class="preview-area" id="previewArea" dir="rtl"></div>
     <div class="dashboard-area" id="dashboardArea">
-        <h3>لوحة التحكم الكاملة</h3>
+        <h3>🎛️ لوحة التحكم الكاملة</h3>
         <button id="saveAllBtn">💾 حفظ جميع التغييرات</button>
         <button id="closeDashboardBtn" style="background:#555;">✖️ إغلاق الداشبورد</button>
         
         <!-- 1. HEADER -->
-        <h4>الهيدر</h4>
+        <h4>📐 الهيدر</h4>
         <div class="section-group">
             <label>خلفية فاتح</label><input type="color" id="headerBgLight" value="#ffffff4d">
             <label>نص فاتح</label><input type="color" id="headerTextLight" value="#1a1a1a">
             <label>خلفية داكن</label><input type="color" id="headerBgDark" value="#00000080">
             <label>نص داكن</label><input type="color" id="headerTextDark" value="#ffffff">
-            <label>لون زر التواصل</label><input type="color" id="callHeaderBg" value="#25e191">
-            <label>نص زر التواصل</label><input type="text" id="callHeaderText" value="خلينا ندردش">
+            <label>لون زر رن لي في الهيدر</label><input type="color" id="callHeaderBg" value="#25e191">
+            <label>نص زر رن لي</label><input type="text" id="callHeaderText" value="رن لي">
             <label>حشوة الهيدر (مثل 8px 30px)</label><input type="text" id="headerPadding" value="8px 30px">
             <label>تدوير الزوايا (px)</label><input type="range" id="headerRadius" min="0" max="100" value="60">
             <label>نوع خط الهيدر</label><select id="headerFont"><option value="'Cairo', sans-serif">Cairo</option><option value="'Tajawal', sans-serif">Tajawal</option></select>
@@ -182,9 +197,9 @@
         </div>
         
         <!-- 2. HERO -->
-        <h4>سيكشن الهيرو</h4>
+        <h4>🎨 الهيرو</h4>
         <div class="section-group">
-            <label>نص الترحيب (Badge)</label><input type="text" id="heroGreetingText" value=" مرحباً، أنا">
+            <label>نص الترحيب (Badge)</label><input type="text" id="heroGreetingText" value="✨ مرحباً، أنا">
             <label>تفعيل الإطار</label><select id="badgeEnabled"><option value="true">نعم</option><option value="false">لا</option></select>
             <label>لون خلفية الإطار</label><input type="color" id="badgeBg" value="#25e191">
             <label>لون نص الإطار</label><input type="color" id="badgeColor" value="#000000">
@@ -197,7 +212,7 @@
         </div>
         
         <!-- 3. BUTTONS -->
-        <h4>إعدادات الأزرار</h4>
+        <h4>🔘 إعدادات الأزرار</h4>
         <div class="section-group">
             <label>لون الخلفية العام للأزرار</label><input type="color" id="btnWorkBg" value="#25e191">
             <label>لون النص العام</label><input type="color" id="btnWorkColor" value="#000000">
@@ -227,7 +242,7 @@
         </div>
         
         <!-- 4. ACHIEVEMENTS -->
-        <h4>سيكشن الإنجازات</h4>
+        <h4>📊 سيكشن الإنجازات</h4>
         <div class="section-group">
             <label>عنوان السيكشن</label><input type="text" id="countersTitle" value="إنجازاتي">
             <label>النص الوصفي</label><textarea id="countersDesc" rows="2">أرقام تعبر عن رحلتي المهنية</textarea>
@@ -245,7 +260,7 @@
             <label>نص زر السيكشن</label><input type="text" id="countersBtnText" value="اكتشف المزيد">
         </div>
         
-        <!-- 5. SERVICES (أضفنا حقل عنوان السيكشن) -->
+        <!-- 5. SERVICES -->
         <h4>🖼️ سيكشن الخدمات</h4>
         <div class="section-group">
             <label>عنوان السيكشن</label><input type="text" id="servicesTitle" value="🤔 أيه اللي أقدر أقدمه لك؟">
@@ -258,23 +273,23 @@
         </div>
         
         <!-- 6. TESTIMONIALS -->
-        <h4> الشهادات</h4>
+        <h4>⭐ الشهادات</h4>
         <div class="section-group">
-            <label>عنوان السيكشن</label><input type="text" id="testimonialsTitle" value=" اللي دخلوا دماغي قالوا ايه">
+            <label>عنوان السيكشن</label><input type="text" id="testimonialsTitle" value="🗣️ اللي دخلوا دماغي قالوا ايه">
             <label>حجم صورة الشخص (px)</label><input type="number" id="testimonialImageSize" value="50">
             <label>حشوة البطاقة (padding)</label><input type="text" id="testimonialCardPadding" value="20px">
             <div id="testimonialsManager"></div><button id="addTestimonialBtn">➕ إضافة شهادة</button>
         </div>
         
         <!-- 7. CLIENTS SLIDER -->
-        <h4>شريط العملاء</h4>
+        <h4>🏢 شريط العملاء</h4>
         <div class="section-group">
             <label>ارتفاع اللوجو (px)</label><input type="range" id="clientLogoHeight" min="30" max="120" value="60">
             <div id="clientsManager"></div><button id="addClientBtn">➕ إضافة لوجو</button>
         </div>
         
         <!-- 8. CONTACT FORM -->
-        <h4>سيكشن التواصل (فورم)</h4>
+        <h4>📧 سيكشن التواصل (فورم)</h4>
         <div class="section-group">
             <label>عنوان السيكشن</label><input type="text" id="formSectionTitle" value="📬 LET'S WORK TOGETHER">
             <label>وصف السيكشن</label><input type="text" id="formSectionDesc" value="Let's build something impactful together.">
@@ -354,9 +369,8 @@
         { number: "50+", label: "عميل" }
     ];
 
-    // ---------------------- وظائف التحديث المباشر (Event Delegation) ----------------------
+    // ---------------------- وظائف التحديث المباشر ----------------------
     function attachLiveUpdates() {
-        // الاستماع لأي تغيير في أي input أو select أو textarea داخل الداشبورد (بما فيها الديناميكية)
         document.getElementById('dashboardArea').addEventListener('input', function(e) {
             if (e.target.matches('input, select, textarea')) {
                 renderPreview();
@@ -374,7 +388,6 @@
             countersImageHtml = `<img class="counters-image" id="countersImageElem" src="${countersImgUrl}" style="width:${document.getElementById('countersImageWidth').value}px; height:${document.getElementById('countersImageHeight').value}px; object-fit:cover;">`;
         }
         
-        // قراءة عنوان سيكشن الخدمات من الحقل الجديد
         let servicesSectionTitle = document.getElementById('servicesTitle') ? document.getElementById('servicesTitle').value : "🤔 أيه اللي أقدر أقدمه لك؟";
         
         let previewHTML = `
@@ -390,7 +403,6 @@
             <div class="character" id="character"><img id="characterImg" src="${document.getElementById('characterImgUrl').value}" onerror="this.src='https://placehold.co/300x300/25e191/white?text=ياسر'"></div>
             <div class="container">
                 <div id="homePage" class="page active-page">
-                    <!-- Hero -->
                     <div class="hero">
                         <div class="hero-content">
                             <div class="hero-greeting" id="heroGreetingSpan">${document.getElementById('heroGreetingText').value}</div>
@@ -404,7 +416,6 @@
                         </div>
                         <div class="hero-image"><img id="profileImage" src="${document.getElementById('profileImgUrl').value}"></div>
                     </div>
-                    <!-- Services -->
                     <div class="services-new-section">
                         <h2 class="section-title" style="text-align:center;">${servicesSectionTitle}</h2>
                         <div class="services-new-container">
@@ -412,9 +423,8 @@
                             <div class="services-image-side"><img id="servicesSideImageElem" src="${document.getElementById('servicesSideImage').value}"></div>
                         </div>
                     </div>
-                    <!-- Achievements -->
                     <div class="counters-section" id="countersSection">
-                        <h2 class="counters-title" style="font-size:${document.getElementById('countersTitleSize').value}rem;">${document.getElementById('countersTitle').value}</h2>
+                        <h2 class="section-title" style="font-size:${document.getElementById('countersTitleSize').value}rem;">${document.getElementById('countersTitle').value}</h2>
                         <div class="counters-desc" style="font-size:${document.getElementById('countersDescSize').value}rem;">${document.getElementById('countersDesc').value}</div>
                         <div class="counters-container">
                             <div class="counters-grid" id="countersGrid"></div>
@@ -422,14 +432,11 @@
                         </div>
                         <button class="counters-btn" id="countersBtn">${document.getElementById('countersBtnText').value}</button>
                     </div>
-                    <!-- Clients Slider -->
                     <div class="clients-slider"><div class="slider-track" id="clientsTrack"></div></div>
-                    <!-- Testimonials -->
                     <div class="testimonials-section">
                         <h2 class="section-title" style="text-align:center;">${document.getElementById('testimonialsTitle').value}</h2>
                         <div class="testimonials-grid" id="testimonialsGrid"></div>
                     </div>
-                    <!-- Form Section -->
                     <div class="form-section">
                         <h2 class="form-section-title" style="text-align:center;">${document.getElementById('formSectionTitle').value}</h2>
                         <div class="form-section-desc" style="text-align:center;">${document.getElementById('formSectionDesc').value}</div>
@@ -542,7 +549,7 @@
         let numberSize = document.getElementById('countersNumberSize').value;
         document.documentElement.style.setProperty('--counter-number-size', numberSize+'rem');
     }
-    function applyStylesToPreview() { /* نفس الكود السابق */ 
+    function applyStylesToPreview() {
         document.documentElement.style.setProperty('--header-bg-light', document.getElementById('headerBgLight').value);
         document.documentElement.style.setProperty('--header-text-light', document.getElementById('headerTextLight').value);
         document.documentElement.style.setProperty('--header-bg-dark', document.getElementById('headerBgDark').value);
@@ -667,7 +674,7 @@
         });
     }
 
-    // ---------------------- DASHBOARD MANAGERS (مع تحديث مباشر) ----------------------
+    // ---------------------- DASHBOARD MANAGERS ----------------------
     function loadManagers() {
         let servDiv = document.getElementById('servicesManager');
         servDiv.innerHTML = '<h5>الخدمات (العنوان، النقاط كل نقطة في سطر)</h5>';
@@ -699,7 +706,7 @@
         countersData.forEach((c,i)=> {
             countersDiv.innerHTML += `<div class="dynamic-item"><input type="text" id="c_num_${i}" value="${c.number}" class="counter-num-input"><input type="text" id="c_label_${i}" value="${c.label}" class="counter-label-input"><button class="delete-btn" onclick="deleteCounter(${i})">حذف</button></div>`;
         });
-        // إضافة مستمعات الأحداث للعناصر الديناميكية (للتحديث المباشر)
+        // إضافة مستمعات الأحداث للعناصر الديناميكية
         document.querySelectorAll('#servicesManager input, #servicesManager textarea').forEach(el => {
             el.removeEventListener('input', updateFromDynamic);
             el.addEventListener('input', updateFromDynamic);
@@ -727,7 +734,6 @@
     }
     
     function updateFromDynamic() {
-        // تحديث المصفوفات من حقول الإدخال الديناميكية
         updateServicesFromInputs();
         updateTestimonialsFromInputs();
         updateClientsFromInputs();
