@@ -6,10 +6,10 @@
     <title>ياسر إسماعيل - بورتفوليو متكامل التحكم</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* ========== تعريف خط ثمانية ========== */
+        /* تعريف خط ثمانية - تم تعديل المسار والصيغة */
         @font-face {
             font-family: 'Thmanyah Sans';
-            src: url('fonts/thmanyahsans-Bold.ttf') format('truetype');
+            src: url('fonts/thmanyahsans-Bold.otf') format('opentype');
             font-weight: bold;
             font-display: swap;
         }
@@ -381,7 +381,6 @@
         { number: "50+", label: "عميل" }
     ];
 
-    // ---------------------- وظائف التحديث المباشر ----------------------
     function attachLiveUpdates() {
         document.getElementById('dashboardArea').addEventListener('input', function(e) {
             if (e.target.matches('input, select, textarea')) {
@@ -390,7 +389,6 @@
         });
     }
     
-    // ---------------------- RENDER PREVIEW ----------------------
     function renderPreview() {
         let preview = document.getElementById('previewArea');
         let isDark = preview.classList.contains('dark-mode');
@@ -401,8 +399,6 @@
         }
         
         let servicesSectionTitle = document.getElementById('servicesTitle') ? document.getElementById('servicesTitle').value : "🤔 أيه اللي أقدر أقدمه لك؟";
-        
-        // تحديث خط العناوين من الحقل الجديد
         let selectedFont = document.getElementById('sectionTitleFontSelect').value;
         document.documentElement.style.setProperty('--section-title-font', selectedFont);
         
@@ -722,7 +718,6 @@
         countersData.forEach((c,i)=> {
             countersDiv.innerHTML += `<div class="dynamic-item"><input type="text" id="c_num_${i}" value="${c.number}" class="counter-num-input"><input type="text" id="c_label_${i}" value="${c.label}" class="counter-label-input"><button class="delete-btn" onclick="deleteCounter(${i})">حذف</button></div>`;
         });
-        // إضافة مستمعات الأحداث للعناصر الديناميكية
         document.querySelectorAll('#servicesManager input, #servicesManager textarea').forEach(el => {
             el.removeEventListener('input', updateFromDynamic);
             el.addEventListener('input', updateFromDynamic);
@@ -880,7 +875,6 @@
     
     function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
     
-    // Dashboard controls
     document.getElementById('dashboardFloatingBtn').onclick = () => { document.getElementById('dashboardArea').classList.toggle('open'); };
     document.getElementById('saveAllBtn').onclick = () => { saveManagersData(); renderPreview(); saveToLocal(); document.getElementById('dashboardArea').classList.remove('open'); };
     document.getElementById('closeDashboardBtn').onclick = () => { document.getElementById('dashboardArea').classList.remove('open'); };
@@ -891,7 +885,6 @@
     document.getElementById('addSocialIconBtn').onclick = () => { socialIconsList.push({ src: "https://placehold.co/40x40", link: "#", label: "وسم" }); renderPreview(); loadManagers(); };
     document.getElementById('addFooterSocialBtn').onclick = () => { footerSocialIcons.push({ src: "https://placehold.co/40x40", link: "#", label: "وسم" }); renderPreview(); loadManagers(); };
     
-    // زر الدارك مود
     const darkModeBtn = document.getElementById('darkModeToggleBtn');
     const previewDiv = document.getElementById('previewArea');
     const darkModeIcon = document.getElementById('darkModeIcon');
