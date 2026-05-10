@@ -6,7 +6,7 @@
     <title>ياسر إسماعيل - بورتفوليو متكامل التحكم</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* إضافة خط ثمانية المخصص للعناوين */
+        /* ========== تعريف خط ثمانية ========== */
         @font-face {
             font-family: 'Thmanyah Sans';
             src: url('fonts/thmanyahsans-Bold.ttf') format('truetype');
@@ -63,7 +63,6 @@
             --form-shadow: none; --form-radius: 24px;
             --counter-title-size: 2rem; --counter-desc-size: 1rem; --counter-number-size: 2rem;
             --counter-bg-light: transparent; --counter-bg-dark: transparent; --counter-gap-bottom: 20px; --counter-btn-margin-top: 30px;
-            /* متغير خط العناوين */
             --section-title-font: 'Thmanyah Sans', 'Cairo', sans-serif;
         }
         /* Preview styles */
@@ -109,7 +108,7 @@
         .service-title-new { color: var(--primary); }
         .service-details-new { max-height: 0; overflow: hidden; transition: 0.4s; padding-right: 20px; }
         .service-details-new.active { max-height: 300px; padding-top: 15px; }
-        /* عناوين السيكشنات - تستخدم المتغير الجديد */
+        /* عناوين السيكشنات - تستخدم خط ثمانية */
         .section-title {
             font-size: var(--section-title-size);
             margin-bottom: 15px;
@@ -343,7 +342,7 @@
             <label>حجم الكاراكتر (px)</label><input type="number" id="characterSize" value="90">
         </div>
         
-        <!-- 11. NEW: HEADINGS FONT CONTROL -->
+        <!-- 11. خط العناوين -->
         <h4>🔤 خط العناوين الرئيسية</h4>
         <div class="section-group">
             <label>اختر خط العناوين (مثل عناوين السيكشنات)</label>
@@ -403,7 +402,7 @@
         
         let servicesSectionTitle = document.getElementById('servicesTitle') ? document.getElementById('servicesTitle').value : "🤔 أيه اللي أقدر أقدمه لك؟";
         
-        // تحديث متغير خط العناوين من الحقل الجديد
+        // تحديث خط العناوين من الحقل الجديد
         let selectedFont = document.getElementById('sectionTitleFontSelect').value;
         document.documentElement.style.setProperty('--section-title-font', selectedFont);
         
