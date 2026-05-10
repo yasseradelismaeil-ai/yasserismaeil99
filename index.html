@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ياسر إسماعيل - بورتفوليو متكامل التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* RESET & GLOBAL */
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Tajawal', sans-serif; overflow: hidden; background: #f5f5f5; }
+        /* SPLIT LAYOUT */
+        .split-container { display: flex; width: 100%; height: 100vh; overflow: hidden; }
+        .preview-area { flex: 1; overflow-y: auto; background: var(--bg-light); color: var(--text-light); transition: 0.3s; }
+        .dashboard-area { width: 0; overflow-y: auto; background: #1e1e2f; color: white; transition: 0.3s; }
+        .dashboard-area.open { width: 360px; padding: 15px; border-left: 2px solid #25e191; }
+        /* Scrollbars */
+        .preview-area::-webkit-scrollbar, .dashboard-area::-webkit-scrollbar { width: 6px; }
+        .preview-area::-webkit-scrollbar-track { background: #ddd; }
+        .preview-area::-webkit-scrollbar-thumb { background: #25e191; border-radius: 10px; }
+        .dashboard-area::-webkit-scrollbar-track { background: #2a2a3b; }
+        .dashboard-area::-webkit-scrollbar-thumb { background: #25e191; }
+        /* Dark mode preview */
+        .preview-area.dark-mode { background: var(--bg-dark); color: var(--text-dark); }
+        /* Dashboard controls */
+        .dashboard-area h3, .dashboard-area h4 { color: #25e191; margin: 15px 0 10px; border-bottom: 1px solid #444; }
+        .dashboard-area label { display: block; margin-top: 8px; font-size: 12px; }
+        .dashboard-area input, .dashboard-area select, .dashboard-area textarea { width: 100%; padding: 5px; margin: 3px 0 8px; border-radius: 6px; border: none; background: #2d2d3a; color: white; }
+        .dashboard-area input[type="color"] { height: 35px; }
+        .dashboard-area .section-group { border: 1px solid #444; padding: 8px; margin: 10px 0; border-radius: 12px; }
+        .dashboard-area button { background: #25e191; color: black; border: none; padding: 6px 10px; border-radius: 20px; cursor: pointer; width: 100%; margin-top: 5px; font-weight: bold; }
+        .dynamic-item { background: #2a2a3a; padding: 8px; margin: 8px 0; border-radius: 8px; }
+        .dynamic-item input, .dynamic-item textarea { width: 100%; margin-bottom: 5px; }
+        .delete-btn { background: #d9534f; color: white; padding: 3px 8px; border-radius: 20px; margin-top: 5px; cursor: pointer; border: none; }
+        /* CSS Variables (نفس السابق) */
+        :root {
+            --bg-light: #ffffff; --bg-dark: #0a0a0a; --text-light: #1a1a1a; --text-dark: #f0f0f0; --primary: #25e191;
+            --header-bg-light: rgba(255,255,255,0.3); --header-text-light: #1a1a1a; --header-border: none; --header-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --header-bg-dark: rgba(0,0,0,0.5); --header-text-dark: #ffffff; --header-padding: 8px 30px; --header-radius: 60px; --header-font: 'Cairo', sans-serif;
+            --active-link-color: var(--primary);
+            --btn-work-bg: #25e191; --btn-work-color: #000; --btn-work-padding: 12px 28px; --btn-work-font-size: 1rem; --btn-work-font-family: 'Cairo', sans-serif;
+            --btn-work-shadow: 0 4px 10px rgba(0,0,0,0.1); --btn-work-radius: 50px; --btn-work-border-width: 0; --btn-work-border-style: solid; --btn-work-border-color: transparent;
+            --btn-call-bg: transparent; --btn-call-color: inherit; --btn-call-padding: 12px 28px; --btn-call-font-size: 1rem; --btn-call-font-family: 'Cairo', sans-serif;
+            --btn-call-shadow: 0 4px 10px rgba(0,0,0,0.1); --btn-call-radius: 50px; --btn-call-border: 2px solid var(--primary);
+            --hero-image-size: 280px; --hero-gap: 60px; --character-size: 90px;
+            --badge-bg: var(--primary); --badge-color: #000; --badge-padding: 6px 18px; --badge-radius: 50px; --badge-font: 0.9rem;
+            --services-image-width: 100%; --services-image-max-width: 400px; --services-item-margin: 20px 0;
+            --service-separator-color: rgba(0,0,0,0.1); --service-separator-width: 1px; --service-separator-style: solid;
+            --testimonial-image-size: 50px; --testimonial-card-padding: 20px;
+            --client-logo-height: 60px; --footer-bg-light: #f8f9fa; --footer-bg-dark: #1e1e2f; --footer-text-light: #333; --footer-text-dark: #ddd;
+            --footer-title-size: 1.2rem; --footer-text-size: 0.9rem; --footer-title-color-light: #25e191; --footer-title-color-dark: #25e191;
+            --social-icon-size: 40px; --footer-social-icon-size: 40px;
+            --form-width: 100%; --form-padding: 30px; --form-bg-light: #f9f9f9; --form-bg-dark: #1e1e2f; --form-text-light: #333; --form-text-dark: #f0f0f0;
+            --form-border-width: 1px; --form-border-style: solid; --form-border-color-light: #ccc; --form-border-color-dark: #444;
+            --form-shadow: none; --form-radius: 24px;
+            --counter-title-size: 2rem; --counter-desc-size: 1rem; --counter-number-size: 2rem;
+            --counter-bg-light: transparent; --counter-bg-dark: transparent; --counter-gap-bottom: 20px; --counter-btn-margin-top: 30px;
+        }
+        /* Preview styles (نفس السابق) */
+        .glass-header { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: var(--header-padding); border-radius: var(--header-radius); font-family: var(--header-font); display: flex; gap: 40px; z-index: 1000; background: var(--header-bg-light); border: var(--header-border); box-shadow: var(--header-shadow); transition: transform 0.3s, opacity 0.3s; }
+        .dark-mode .glass-header { background: var(--header-bg-dark); }
+        .glass-header.hide { transform: translateX(-50%) translateY(-150%); opacity: 0; visibility: hidden; }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { text-decoration: none; font-weight: 500; color: var(--header-text-light); }
+        .dark-mode .nav-links a { color: var(--header-text-dark); }
+        .nav-links a.active-link { color: var(--active-link-color); font-weight: bold; }
+        /* زر الدارك مود أعلى يسار */
+        .dark-mode-btn {
+            position: fixed; top: 20px; left: 20px; width: 48px; height: 48px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border-radius: 50%;
+            border: none; cursor: pointer; z-index: 1001;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: 0.3s;
+        }
+        .dark-mode-btn img { width: 70%; height: 70%; object-fit: contain; }
+        .dark-mode-btn:hover { transform: scale(1.05); background: var(--primary); }
+        .character { position: fixed; bottom: 0; right: 0; width: var(--character-size); cursor: pointer; z-index: 999; opacity: 0; transform: scale(0) translateX(20px); transition: 0.5s; }
+        .character.show { opacity: 1; transform: scale(1) translateX(0); }
+        .character img { width: 100%; border-radius: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 100px 20px 50px; min-height: 100vh; }
+        .hero { display: flex; align-items: center; gap: var(--hero-gap); flex-wrap: wrap; padding: 60px 0; }
+        .hero-content { flex: 1; }
+        .hero-greeting { display: inline-block; background: var(--badge-bg); color: var(--badge-color); padding: var(--badge-padding); border-radius: var(--badge-radius); font-size: var(--badge-font); margin-bottom: 15px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 15px; }
+        .hero-buttons { display: flex; gap: 20px; margin-top: 30px; }
+        .btn-work, .btn-call, .counters-btn, .form-submit { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: none; transition: 0.3s; }
+        .btn-work { background: var(--btn-work-bg); color: var(--btn-work-color); padding: var(--btn-work-padding); font-size: var(--btn-work-font-size); font-family: var(--btn-work-font-family); box-shadow: var(--btn-work-shadow); border-radius: var(--btn-work-radius); border: var(--btn-work-border-width) var(--btn-work-border-style) var(--btn-work-border-color); }
+        .btn-work::before { content: attr(data-icon); margin-left: 8px; }
+        .btn-call { background: var(--btn-call-bg); color: var(--btn-call-color); padding: var(--btn-call-padding); font-size: var(--btn-call-font-size); font-family: var(--btn-call-font-family); box-shadow: var(--btn-call-shadow); border-radius: var(--btn-call-radius); border: var(--btn-call-border); }
+        .btn-call::before { content: attr(data-icon); margin-left: 8px; }
+        .counters-btn { background: var(--btn-work-bg); color: var(--btn-work-color); padding: var(--btn-work-padding); font-size: var(--btn-work-font-size); font-family: var(--btn-work-font-family); box-shadow: var(--btn-work-shadow); border-radius: var(--btn-work-radius); border: var(--btn-work-border-width) var(--btn-work-border-style) var(--btn-work-border-color); margin-top: var(--counter-btn-margin-top); }
+        .hero-image img { width: var(--hero-image-size); border-radius: 30px; }
+        .services-new-container { display: flex; flex-wrap: wrap; gap: 50px; margin: 40px 0; }
+        .services-list { flex: 2; }
+        .services-image-side { flex: 1; text-align: center; }
+        .services-image-side img { width: var(--services-image-width); max-width: var(--services-image-max-width); border-radius: 20px; }
+        .service-item-new { margin: var(--services-item-margin); border-bottom: var(--service-separator-width) var(--service-separator-style) var(--service-separator-color); padding: 15px 0; cursor: pointer; }
+        .service-header-new { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; }
+        .service-title-new { color: var(--primary); }
+        .service-details-new { max-height: 0; overflow: hidden; transition: 0.4s; padding-right: 20px; }
+        .service-details-new.active { max-height: 300px; padding-top: 15px; }
+        .counters-section { text-align: center; margin: 60px 0; padding: 40px 20px; border-radius: 30px; background: var(--counter-bg-light); }
+        .dark-mode .counters-section { background: var(--counter-bg-dark); }
+        .counters-title { font-size: var(--counter-title-size); margin-bottom: 15px; }
+        .counters-desc { font-size: var(--counter-desc-size); margin-bottom: var(--counter-gap-bottom); opacity: 0.8; }
+        .counters-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 40px; margin-bottom: 20px; }
+        .counters-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; }
+        .counter-item { text-align: center; min-width: 120px; }
+        .counter-number { font-size: var(--counter-number-size); font-weight: bold; color: var(--primary); }
+        .counters-image { max-width: 100%; height: auto; border-radius: 20px; }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 30px; margin: 40px 0; }
+        .testimonial-card { background: rgba(0,0,0,0.03); border-radius: 20px; padding: var(--testimonial-card-padding); }
+        .dark-mode .testimonial-card { background: rgba(255,255,255,0.05); }
+        .testimonial-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .testimonial-image { width: var(--testimonial-image-size); height: var(--testimonial-image-size); border-radius: 50%; object-fit: cover; }
+        .testimonial-info { flex: 1; }
+        .testimonial-name { font-weight: bold; }
+        .testimonial-job { font-size: 0.8rem; opacity: 0.7; }
+        .testimonial-stars { color: gold; direction: ltr; margin: 5px 0; display: inline-block; }
+        .testimonial-text { line-height: 1.5; }
+        .preview-area[dir="rtl"] .testimonial-card { text-align: right; }
+        .preview-area[dir="ltr"] .testimonial-card { text-align: left; }
+        .clients-slider { overflow: hidden; padding: 40px 0; margin: 40px 0; background: rgba(0,0,0,0.02); border-radius: 20px; }
+        .slider-track { display: flex; gap: 50px; animation: scroll 20s linear infinite; width: fit-content; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .slider-track img { height: var(--client-logo-height); opacity: 0.6; }
+        .form-section-title { text-align: center; margin-bottom: 20px; }
+        .form-section-desc { text-align: center; margin-bottom: 30px; opacity: 0.8; }
+        .form-social-section { display: flex; flex-wrap: wrap; gap: 40px; margin: 40px 0; }
+        .form-container { flex: 2; width: var(--form-width); padding: var(--form-padding); border-radius: var(--form-radius); box-shadow: var(--form-shadow); border: var(--form-border-width) var(--form-border-style) var(--form-border-color-light); background: var(--form-bg-light); color: var(--form-text-light); }
+        .dark-mode .form-container { background: var(--form-bg-dark); color: var(--form-text-dark); border-color: var(--form-border-color-dark); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--form-border-color-light); background: white; }
+        .dark-mode .form-group input, .dark-mode .form-group select, .dark-mode .form-group textarea { background: #2d2d3a; color: white; border-color: var(--form-border-color-dark); }
+        .radio-group { display: flex; gap: 20px; }
+        .form-submit { background: var(--primary); color: #000; padding: 12px; border: none; border-radius: 50px; width: 100%; font-weight: bold; }
+        .form-side-image { flex: 1; text-align: center; }
+        .form-side-image img { max-width: 100%; border-radius: 20px; max-height: 300px; }
+        .social-icons-under-form { display: flex; justify-content: center; gap: 25px; margin: 20px 0; flex-wrap: wrap; }
+        .social-icon-img { width: var(--social-icon-size); height: var(--social-icon-size); object-fit: contain; }
+        .custom-footer { background: var(--footer-bg-light); color: var(--footer-text-light); padding: 40px 20px; margin-top: 60px; }
+        .dark-mode .custom-footer { background: var(--footer-bg-dark); color: var(--footer-text-dark); }
+        .footer-columns { display: flex; flex-wrap: wrap; justify-content: space-around; gap: 30px; max-width: 1200px; margin: auto; }
+        .footer-col { text-align: center; }
+        .footer-col h4 { color: var(--footer-title-color-light); font-size: var(--footer-title-size); margin-bottom: 15px; }
+        .dark-mode .footer-col h4 { color: var(--footer-title-color-dark); }
+        .footer-col p, .footer-col a { font-size: var(--footer-text-size); }
+        .footer-social-icons { display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+        .footer-social-icon-img { width: var(--footer-social-icon-size); height: var(--footer-social-icon-size); object-fit: contain; }
+        .page { display: none; }
+        .page.active-page { display: block; }
+        #dashboardFloatingBtn { position: fixed; bottom: 25px; right: 25px; background: #25e191; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; z-index: 1002; box-shadow: 0 4px 12px black; transition: 0.3s; color: black; }
+        #dashboardFloatingBtn:hover { transform: scale(1.05); }
+        @media (max-width: 800px) { .dashboard-area.open { width: 260px; } .services-new-container { flex-direction: column; } .form-social-section { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<div class="split-container">
+    <div class="preview-area" id="previewArea" dir="rtl"></div>
+    <div class="dashboard-area" id="dashboardArea">
+        <h3>لوحة التحكم الكاملة</h3>
+        <button id="saveAllBtn">💾 حفظ جميع التغييرات</button>
+        <button id="closeDashboardBtn" style="background:#555;">✖️ إغلاق الداشبورد</button>
+        
+        <!-- 1. HEADER -->
+        <h4>الهيدر</h4>
+        <div class="section-group">
+            <label>خلفية فاتح</label><input type="color" id="headerBgLight" value="#ffffff4d">
+            <label>نص فاتح</label><input type="color" id="headerTextLight" value="#1a1a1a">
+            <label>خلفية داكن</label><input type="color" id="headerBgDark" value="#00000080">
+            <label>نص داكن</label><input type="color" id="headerTextDark" value="#ffffff">
+            <label>لون زر التواصل</label><input type="color" id="callHeaderBg" value="#25e191">
+            <label>نص زر التواصل</label><input type="text" id="callHeaderText" value="خلينا ندردش">
+            <label>حشوة الهيدر (مثل 8px 30px)</label><input type="text" id="headerPadding" value="8px 30px">
+            <label>تدوير الزوايا (px)</label><input type="range" id="headerRadius" min="0" max="100" value="60">
+            <label>نوع خط الهيدر</label><select id="headerFont"><option value="'Cairo', sans-serif">Cairo</option><option value="'Tajawal', sans-serif">Tajawal</option></select>
+            <label>الحدود (stroke) - نوع</label><select id="headerBorderType"><option value="none">بدون</option><option value="solid">صلب</option><option value="dashed">متقطع</option></select>
+            <label>عرض الحدود (px)</label><input type="number" id="headerBorderWidth" value="1">
+            <label>لون الحدود</label><input type="color" id="headerBorderColor" value="#ffffff4d">
+            <label>الظل (box-shadow)</label><input type="text" id="headerShadow" value="0 4px 15px rgba(0,0,0,0.1)">
+        </div>
+        
+        <!-- 2. HERO -->
+        <h4>سيكشن الهيرو</h4>
+        <div class="section-group">
+            <label>نص الترحيب (Badge)</label><input type="text" id="heroGreetingText" value=" مرحباً، أنا">
+            <label>تفعيل الإطار</label><select id="badgeEnabled"><option value="true">نعم</option><option value="false">لا</option></select>
+            <label>لون خلفية الإطار</label><input type="color" id="badgeBg" value="#25e191">
+            <label>لون نص الإطار</label><input type="color" id="badgeColor" value="#000000">
+            <label>الاسم الكبير</label><input type="text" id="heroNameText" value="ياسر إسماعيل">
+            <label>المسمى الوظيفي</label><input type="text" id="heroJobText" value="كريتيف دايركتور | كونتنت كريتور">
+            <label>النبذة (أسطر)</label><textarea id="heroBio" rows="2">أنا مبدع، أحول الأفكار المجنونة لواقع. خبرتي 9 سنوات.</textarea>
+            <label>رابط صورتك</label><input type="text" id="profileImgUrl" value="https://placehold.co/400x400/25e191/white?text=ياسر">
+            <label>حجم الصورة (px)</label><input type="number" id="heroImageSize" value="280">
+            <label>المسافة بين الصورة والمحتوى (px)</label><input type="number" id="heroGap" value="60">
+        </div>
+        
+        <!-- 3. BUTTONS -->
+        <h4>إعدادات الأزرار</h4>
+        <div class="section-group">
+            <label>لون الخلفية العام للأزرار</label><input type="color" id="btnWorkBg" value="#25e191">
+            <label>لون النص العام</label><input type="color" id="btnWorkColor" value="#000000">
+            <label>نوع الخط</label><select id="btnWorkFont"><option value="'Cairo', sans-serif">Cairo</option><option value="'Tajawal', sans-serif">Tajawal</option></select>
+            <label>حجم الخط (rem)</label><input type="range" id="btnWorkFontSize" min="0.8" max="2" step="0.05" value="1">
+            <label>الحشوة (padding)</label><input type="text" id="btnWorkPadding" value="12px 28px">
+            <label>الظل</label><input type="text" id="btnWorkShadow" value="0 4px 10px rgba(0,0,0,0.1)">
+            <label>تدوير الزوايا (px)</label><input type="range" id="btnWorkRadius" min="0" max="60" value="50">
+            <label>الحدود: عرض (px)</label><input type="number" id="btnWorkBorderWidth" value="0">
+            <label>نوع الحدود</label><select id="btnWorkBorderStyle"><option value="solid">صلب</option><option value="dashed">متقطع</option><option value="none">بدون</option></select>
+            <label>لون الحدود</label><input type="color" id="btnWorkBorderColor" value="#25e191">
+            <hr>
+            <label>نص زر شوف شغلي</label><input type="text" id="btnWorkText" value="شوف شغلي">
+            <label>أيقونته</label><input type="text" id="btnWorkIcon" value="📂">
+            <label>نص زر رن لي (هيرو)</label><input type="text" id="btnCallText" value="اديني رنة">
+            <label>أيقونته</label><input type="text" id="btnCallIcon" value="📞">
+            <label>لون خلفية زر رن لي</label><input type="color" id="btnCallBg" value="#ffffff00">
+            <label>لون نص زر رن لي</label><input type="color" id="btnCallColor" value="#000000">
+            <label>نوع خط زر رن لي</label><select id="btnCallFont"><option value="'Cairo', sans-serif">Cairo</option><option value="'Tajawal', sans-serif">Tajawal</option></select>
+            <label>حجم خط زر رن لي</label><input type="range" id="btnCallFontSize" min="0.8" max="2" step="0.05" value="1">
+            <label>حشوة زر رن لي</label><input type="text" id="btnCallPadding" value="12px 28px">
+            <label>ظل زر رن لي</label><input type="text" id="btnCallShadow" value="0 4px 10px rgba(0,0,0,0.1)">
+            <label>تدوير زر رن لي</label><input type="range" id="btnCallRadius" min="0" max="60" value="50">
+            <label>حدود زر رن لي: عرض (px)</label><input type="number" id="btnCallBorderWidth" value="2">
+            <label>نوع الحدود</label><select id="btnCallBorderStyle"><option value="solid">صلب</option><option value="dashed">متقطع</option></select>
+            <label>لون الحدود</label><input type="color" id="btnCallBorderColor" value="#25e191">
+        </div>
+        
+        <!-- 4. ACHIEVEMENTS -->
+        <h4>سيكشن الإنجازات</h4>
+        <div class="section-group">
+            <label>عنوان السيكشن</label><input type="text" id="countersTitle" value="إنجازاتي">
+            <label>النص الوصفي</label><textarea id="countersDesc" rows="2">أرقام تعبر عن رحلتي المهنية</textarea>
+            <label>رابط الصورة (اتركه فارغاً لإخفاء الصورة)</label><input type="text" id="countersImage" value="">
+            <label>عرض الصورة (px)</label><input type="number" id="countersImageWidth" value="150">
+            <label>ارتفاع الصورة (px)</label><input type="number" id="countersImageHeight" value="150">
+            <label>حجم خط العنوان (rem)</label><input type="number" id="countersTitleSize" step="0.1" value="2">
+            <label>حجم خط الوصف (rem)</label><input type="number" id="countersDescSize" step="0.1" value="1">
+            <label>حجم الأرقام (rem)</label><input type="number" id="countersNumberSize" step="0.1" value="2">
+            <label>خلفية السيكشن - فاتح</label><input type="color" id="counterBgLight" value="#00000000">
+            <label>خلفية السيكشن - داكن</label><input type="color" id="counterBgDark" value="#00000000">
+            <label>المسافة بين الوصف والمحتوى (px)</label><input type="number" id="counterGapBottom" value="20">
+            <label>المسافة بين المحتوى والزر (px)</label><input type="number" id="counterBtnMarginTop" value="30">
+            <div id="countersManager"></div><button id="addCounterBtn">➕ إضافة عداد</button>
+            <label>نص زر السيكشن</label><input type="text" id="countersBtnText" value="اكتشف المزيد">
+        </div>
+        
+        <!-- 5. SERVICES (أضفنا حقل عنوان السيكشن) -->
+        <h4>🖼️ سيكشن الخدمات</h4>
+        <div class="section-group">
+            <label>عنوان السيكشن</label><input type="text" id="servicesTitle" value="🤔 أيه اللي أقدر أقدمه لك؟">
+            <label>رابط الصورة الجانبية</label><input type="text" id="servicesSideImage" value="https://placehold.co/500x500/25e191/white?text=خدماتي">
+            <label>عرض الصورة الجانبية (CSS)</label><input type="text" id="servicesImageWidth" value="100%">
+            <label>أقصى عرض للصورة الجانبية (px)</label><input type="number" id="servicesImageMaxWidth" value="400">
+            <label>لون الفاصل بين الخدمات</label><input type="color" id="serviceSeparatorColor" value="#cccccc">
+            <label>عرض الفاصل (px)</label><input type="number" id="serviceSeparatorWidth" value="1">
+            <div id="servicesManager"></div><button id="addServiceBtn">➕ إضافة خدمة جديدة</button>
+        </div>
+        
+        <!-- 6. TESTIMONIALS -->
+        <h4> الشهادات</h4>
+        <div class="section-group">
+            <label>عنوان السيكشن</label><input type="text" id="testimonialsTitle" value=" اللي دخلوا دماغي قالوا ايه">
+            <label>حجم صورة الشخص (px)</label><input type="number" id="testimonialImageSize" value="50">
+            <label>حشوة البطاقة (padding)</label><input type="text" id="testimonialCardPadding" value="20px">
+            <div id="testimonialsManager"></div><button id="addTestimonialBtn">➕ إضافة شهادة</button>
+        </div>
+        
+        <!-- 7. CLIENTS SLIDER -->
+        <h4>شريط العملاء</h4>
+        <div class="section-group">
+            <label>ارتفاع اللوجو (px)</label><input type="range" id="clientLogoHeight" min="30" max="120" value="60">
+            <div id="clientsManager"></div><button id="addClientBtn">➕ إضافة لوجو</button>
+        </div>
+        
+        <!-- 8. CONTACT FORM -->
+        <h4>سيكشن التواصل (فورم)</h4>
+        <div class="section-group">
+            <label>عنوان السيكشن</label><input type="text" id="formSectionTitle" value="📬 LET'S WORK TOGETHER">
+            <label>وصف السيكشن</label><input type="text" id="formSectionDesc" value="Let's build something impactful together.">
+            <label>رابط الصورة الجانبية</label><input type="text" id="formSideImage" value="https://placehold.co/400x400/25e191/white?text=تواصل">
+            <label>تسميات الحقول</label><input type="text" id="formNameLabel" value="الاسم"><input type="text" id="formEmailLabel" value="البريد الإلكتروني"><input type="text" id="formServiceLabel" value="الخدمة المطلوبة"><input type="text" id="formMessageLabel" value="رسالتك"><input type="text" id="formDestLabel" value="إرسال إلى"><input type="text" id="formWhatsappLabel" value="واتساب"><input type="text" id="formEmailOptionLabel" value="إيميل"><input type="text" id="formSubmitText" value="إرسال">
+            <label>رابط واتساب (رقم)</label><input type="text" id="whatsappLink" value="201234567890">
+            <label>البريد الإلكتروني المستلم</label><input type="email" id="receiverEmail" value="yasser@example.com">
+            <label>عرض الفورم (CSS)</label><input type="text" id="formWidth" value="100%">
+            <label>الحشوة الداخلية (padding)</label><input type="text" id="formPadding" value="30px">
+            <label>لون خلفية الفورم - فاتح</label><input type="color" id="formBgLight" value="#f9f9f9">
+            <label>لون خلفية الفورم - داكن</label><input type="color" id="formBgDark" value="#1e1e2f">
+            <label>لون نص الفورم - فاتح</label><input type="color" id="formTextLight" value="#333333">
+            <label>لون نص الفورم - داكن</label><input type="color" id="formTextDark" value="#f0f0f0">
+            <label>الحدود (stroke) - عرض (px)</label><input type="number" id="formBorderWidth" value="1">
+            <label>نوع الحدود</label><select id="formBorderStyle"><option value="solid">صلب</option><option value="dashed">متقطع</option><option value="none">بدون</option></select>
+            <label>لون الحدود - فاتح</label><input type="color" id="formBorderColorLight" value="#cccccc">
+            <label>لون الحدود - داكن</label><input type="color" id="formBorderColorDark" value="#444444">
+            <label>الظل (box-shadow)</label><input type="text" id="formShadow" value="none">
+            <label>تدوير الزوايا (px)</label><input type="number" id="formRadius" value="24">
+            <div id="socialIconsManager"></div><button id="addSocialIconBtn">➕ إضافة أيقون سوشيال (لأسفل الفورم)</button>
+            <label>حجم أيقونات السوشيال (px)</label><input type="number" id="socialIconSize" value="40">
+        </div>
+        
+        <!-- 9. FOOTER -->
+        <h4>📞 الفوتر</h4>
+        <div class="section-group">
+            <label>خلفية الفوتر - فاتح</label><input type="color" id="footerBgLight" value="#f8f9fa">
+            <label>خلفية الفوتر - داكن</label><input type="color" id="footerBgDark" value="#1e1e2f">
+            <label>لون النص - فاتح</label><input type="color" id="footerTextLight" value="#333333">
+            <label>لون النص - داكن</label><input type="color" id="footerTextDark" value="#dddddd">
+            <label>لون عناوين الأعمدة - فاتح</label><input type="color" id="footerTitleLight" value="#25e191">
+            <label>لون عناوين الأعمدة - داكن</label><input type="color" id="footerTitleDark" value="#25e191">
+            <label>حجم خط العناوين (rem)</label><input type="number" id="footerTitleSize" step="0.1" value="1.2">
+            <label>حجم خط النصوص (rem)</label><input type="number" id="footerTextSize" step="0.1" value="0.9">
+            <label>نصوص الأعمدة</label>
+            <label>نص عنوان عمود الإيميل</label><input type="text" id="footerEmailTitle" value="Email :">
+            <label>نص الإيميل</label><input type="email" id="footerEmailAddress" value="Bakshesh.work@gmail.com">
+            <label>نص عنوان عمود الهاتف</label><input type="text" id="footerCallTitle" value="Call Today :">
+            <label>رقم الهاتف</label><input type="text" id="footerPhoneNumber" value="+20 102 3544610">
+            <label>نص عنوان عمود السوشيال</label><input type="text" id="footerSocialTitle" value="Social :">
+            <label>حجم أيقونات السوشيال في الفوتر (px)</label><input type="number" id="footerSocialIconSize" value="40">
+            <div id="footerSocialIconsManager"></div><button id="addFooterSocialBtn">➕ إضافة أيقون سوشيال للفوتر (صورة)</button>
+        </div>
+        
+        <!-- 10. CHARACTER -->
+        <h4>🎭 الكاراكتر</h4>
+        <div class="section-group">
+            <label>رابط صورة الكاراكتر</label><input type="text" id="characterImgUrl" value="https://placehold.co/300x300/25e191/white?text=ياسر">
+            <label>حجم الكاراكتر (px)</label><input type="number" id="characterSize" value="90">
+        </div>
+    </div>
+</div>
+<div id="dashboardFloatingBtn">🔧</div>
+<button class="dark-mode-btn" id="darkModeToggleBtn"><img id="darkModeIcon" src="https://img.icons8.com/ios-filled/50/ffffff/moon-symbol.png" alt="dark mode"></button>
+
+<script>
+    // ---------------------- DATA MODELS ----------------------
+    let servicesListData = [
+        { title: "2D & 3D MOTION GRAPHICS", points: ["Visual Development", "Concept Illustration", "Motion Choreography"] },
+        { title: "VIDEO EDITING", points: ["Editing", "Color Grading", "Sound Design"] }
+    ];
+    let testimonialsData = [
+        { name: "أحمد", job: "مدير تسويق", text: "شغل احترافي ومبدع", rating: 5, image: "https://randomuser.me/api/portraits/men/1.jpg" },
+        { name: "منى", job: "مصممة جرافيك", text: "تعامل راقي وجودة عالية", rating: 4, image: "https://randomuser.me/api/portraits/women/1.jpg" }
+    ];
+    let clientsLogos = ["https://placehold.co/150x60/cccccc/white?text=عميل1", "https://placehold.co/150x60/cccccc/white?text=عميل2"];
+    let socialIconsList = [
+        { src: "https://cdn-icons-png.flaticon.com/512/1384/1384055.png", link: "https://facebook.com", label: "فيسبوك" },
+        { src: "https://cdn-icons-png.flaticon.com/512/1384/1384063.png", link: "https://instagram.com", label: "انستجرام" }
+    ];
+    let footerSocialIcons = [
+        { src: "https://cdn-icons-png.flaticon.com/512/174/174857.png", link: "https://linkedin.com", label: "LinkedIn" },
+        { src: "https://cdn-icons-png.flaticon.com/512/1384/1384014.png", link: "https://behance.net", label: "Behance" }
+    ];
+    let countersData = [
+        { number: "150+", label: "مشروع" },
+        { number: "50+", label: "عميل" }
+    ];
+
+    // ---------------------- وظائف التحديث المباشر (Event Delegation) ----------------------
+    function attachLiveUpdates() {
+        // الاستماع لأي تغيير في أي input أو select أو textarea داخل الداشبورد (بما فيها الديناميكية)
+        document.getElementById('dashboardArea').addEventListener('input', function(e) {
+            if (e.target.matches('input, select, textarea')) {
+                renderPreview();
+            }
+        });
+    }
+    
+    // ---------------------- RENDER PREVIEW ----------------------
+    function renderPreview() {
+        let preview = document.getElementById('previewArea');
+        let isDark = preview.classList.contains('dark-mode');
+        let countersImageHtml = '';
+        let countersImgUrl = document.getElementById('countersImage').value;
+        if(countersImgUrl) {
+            countersImageHtml = `<img class="counters-image" id="countersImageElem" src="${countersImgUrl}" style="width:${document.getElementById('countersImageWidth').value}px; height:${document.getElementById('countersImageHeight').value}px; object-fit:cover;">`;
+        }
+        
+        // قراءة عنوان سيكشن الخدمات من الحقل الجديد
+        let servicesSectionTitle = document.getElementById('servicesTitle') ? document.getElementById('servicesTitle').value : "🤔 أيه اللي أقدر أقدمه لك؟";
+        
+        let previewHTML = `
+            <header class="glass-header" id="mainHeader">
+                <ul class="nav-links">
+                    <li><a href="#" data-page="home" class="nav-link active-link">الرئيسية</a></li>
+                    <li><a href="#" data-page="about" class="nav-link">عني</a></li>
+                    <li><a href="#" data-page="projects" class="nav-link">مشاريع</a></li>
+                    <li><a href="#" data-page="snippets" class="nav-link">مقتطفات</a></li>
+                    <li><a href="#" data-page="contact" class="nav-link" id="callHeaderBtn" style="background:${document.getElementById('callHeaderBg').value}; color:white; padding:6px 18px; border-radius:40px;">${document.getElementById('callHeaderText').value}</a></li>
+                </ul>
+            </header>
+            <div class="character" id="character"><img id="characterImg" src="${document.getElementById('characterImgUrl').value}" onerror="this.src='https://placehold.co/300x300/25e191/white?text=ياسر'"></div>
+            <div class="container">
+                <div id="homePage" class="page active-page">
+                    <!-- Hero -->
+                    <div class="hero">
+                        <div class="hero-content">
+                            <div class="hero-greeting" id="heroGreetingSpan">${document.getElementById('heroGreetingText').value}</div>
+                            <h1 id="heroNameSpan">${document.getElementById('heroNameText').value}</h1>
+                            <p><strong id="heroJobSpan">${document.getElementById('heroJobText').value}</strong></p>
+                            <div id="heroBioContainer"><p>${document.getElementById('heroBio').value.replace(/\n/g,'</p><p>')}</p></div>
+                            <div class="hero-buttons">
+                                <button class="btn-work" id="workBtn" data-icon="${document.getElementById('btnWorkIcon').value}">${document.getElementById('btnWorkText').value}</button>
+                                <button class="btn-call" id="callBtnHero" data-icon="${document.getElementById('btnCallIcon').value}">${document.getElementById('btnCallText').value}</button>
+                            </div>
+                        </div>
+                        <div class="hero-image"><img id="profileImage" src="${document.getElementById('profileImgUrl').value}"></div>
+                    </div>
+                    <!-- Services -->
+                    <div class="services-new-section">
+                        <h2 class="section-title" style="text-align:center;">${servicesSectionTitle}</h2>
+                        <div class="services-new-container">
+                            <div class="services-list" id="servicesList"></div>
+                            <div class="services-image-side"><img id="servicesSideImageElem" src="${document.getElementById('servicesSideImage').value}"></div>
+                        </div>
+                    </div>
+                    <!-- Achievements -->
+                    <div class="counters-section" id="countersSection">
+                        <h2 class="counters-title" style="font-size:${document.getElementById('countersTitleSize').value}rem;">${document.getElementById('countersTitle').value}</h2>
+                        <div class="counters-desc" style="font-size:${document.getElementById('countersDescSize').value}rem;">${document.getElementById('countersDesc').value}</div>
+                        <div class="counters-container">
+                            <div class="counters-grid" id="countersGrid"></div>
+                            ${countersImageHtml}
+                        </div>
+                        <button class="counters-btn" id="countersBtn">${document.getElementById('countersBtnText').value}</button>
+                    </div>
+                    <!-- Clients Slider -->
+                    <div class="clients-slider"><div class="slider-track" id="clientsTrack"></div></div>
+                    <!-- Testimonials -->
+                    <div class="testimonials-section">
+                        <h2 class="section-title" style="text-align:center;">${document.getElementById('testimonialsTitle').value}</h2>
+                        <div class="testimonials-grid" id="testimonialsGrid"></div>
+                    </div>
+                    <!-- Form Section -->
+                    <div class="form-section">
+                        <h2 class="form-section-title" style="text-align:center;">${document.getElementById('formSectionTitle').value}</h2>
+                        <div class="form-section-desc" style="text-align:center;">${document.getElementById('formSectionDesc').value}</div>
+                        <div class="form-social-section">
+                            <div class="form-container" id="formContainer">
+                                <div class="form-group"><label>${document.getElementById('formNameLabel').value}</label><input type="text" id="formName" placeholder="أدخل اسمك"></div>
+                                <div class="form-group"><label>${document.getElementById('formEmailLabel').value}</label><input type="email" id="formEmail" placeholder="example@domain.com"></div>
+                                <div class="form-group"><label>${document.getElementById('formServiceLabel').value}</label><select id="formService"><option>خدمة الكتابة</option><option>خدمة التصميم</option></select></div>
+                                <div class="form-group"><label>${document.getElementById('formMessageLabel').value}</label><textarea id="formMessage" rows="4"></textarea></div>
+                                <div class="form-group"><label>${document.getElementById('formDestLabel').value}</label><div class="radio-group"><label><input type="radio" name="destination" value="whatsapp" checked> ${document.getElementById('formWhatsappLabel').value}</label><label><input type="radio" name="destination" value="email"> ${document.getElementById('formEmailOptionLabel').value}</label></div></div>
+                                <button class="form-submit" id="formSubmitBtn">${document.getElementById('formSubmitText').value}</button>
+                            </div>
+                            <div class="form-side-image"><img id="formSideImageElem" src="${document.getElementById('formSideImage').value}"></div>
+                        </div>
+                        <div class="social-icons-under-form" id="socialIconsContainer"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="custom-footer">
+                <div class="footer-columns">
+                    <div class="footer-col"><h4>${document.getElementById('footerEmailTitle').value}</h4><p>${document.getElementById('footerEmailAddress').value}</p></div>
+                    <div class="footer-col"><h4>${document.getElementById('footerCallTitle').value}</h4><p>${document.getElementById('footerPhoneNumber').value}</p></div>
+                    <div class="footer-col"><h4>${document.getElementById('footerSocialTitle').value}</h4><div class="footer-social-icons" id="footerSocialIconsContainer"></div></div>
+                </div>
+            </div>
+        `;
+        preview.innerHTML = previewHTML;
+        applyStylesToPreview();
+        renderServices(preview);
+        renderTestimonials(preview);
+        renderClients(preview);
+        renderSocialIcons(preview);
+        renderFooterSocial(preview);
+        renderCounters(preview);
+        attachPreviewEvents(preview);
+        setTimeout(() => {
+            let char = preview.querySelector('.character');
+            if(char) char.classList.add('show');
+        }, 500);
+    }
+
+    function renderServices(container) {
+        let div = container.querySelector('#servicesList');
+        if(!div) return;
+        div.innerHTML = '';
+        servicesListData.forEach((s, idx) => {
+            let item = document.createElement('div'); item.className = 'service-item-new';
+            item.innerHTML = `<div class="service-header-new"><div class="service-title-new">${idx+1}. ${escapeHtml(s.title)}</div><span class="service-icon-new">▼</span></div><div class="service-details-new"><ul>${s.points.map(p=>`<li>${escapeHtml(p)}</li>`).join('')}</ul></div>`;
+            let header = item.querySelector('.service-header-new');
+            let details = item.querySelector('.service-details-new');
+            let iconSpan = item.querySelector('.service-icon-new');
+            header.onclick = () => { details.classList.toggle('active'); iconSpan.textContent = details.classList.contains('active') ? '▲' : '▼'; };
+            div.appendChild(item);
+        });
+    }
+    function renderTestimonials(container) {
+        let grid = container.querySelector('#testimonialsGrid');
+        if(!grid) return;
+        grid.innerHTML = '';
+        testimonialsData.forEach(t => {
+            let stars = '★'.repeat(t.rating) + '☆'.repeat(5-t.rating);
+            let card = document.createElement('div'); card.className = 'testimonial-card';
+            card.innerHTML = `<div class="testimonial-header"><img class="testimonial-image" src="${t.image}" onerror="this.src='https://placehold.co/100x100/cccccc?text=User'"><div class="testimonial-info"><div class="testimonial-name">${escapeHtml(t.name)}</div><div class="testimonial-job">${escapeHtml(t.job || '')}</div><div class="testimonial-stars">${stars}</div></div></div><div class="testimonial-text">"${escapeHtml(t.text)}"</div>`;
+            grid.appendChild(card);
+        });
+        let imgSize = document.getElementById('testimonialImageSize').value;
+        document.documentElement.style.setProperty('--testimonial-image-size', imgSize+'px');
+        let padding = document.getElementById('testimonialCardPadding').value;
+        document.documentElement.style.setProperty('--testimonial-card-padding', padding);
+    }
+    function renderClients(container) {
+        let track = container.querySelector('#clientsTrack');
+        if(!track) return;
+        track.innerHTML = '';
+        [...clientsLogos, ...clientsLogos].forEach(src => { let img = document.createElement('img'); img.src = src; track.appendChild(img); });
+        let h = document.getElementById('clientLogoHeight').value;
+        document.documentElement.style.setProperty('--client-logo-height', h+'px');
+    }
+    function renderSocialIcons(container) {
+        let cont = container.querySelector('#socialIconsContainer');
+        if(!cont) return;
+        cont.innerHTML = '';
+        socialIconsList.forEach(ic => {
+            let a = document.createElement('a'); a.href = ic.link; a.target="_blank"; a.style.margin = '10px'; a.style.display = 'inline-block';
+            a.innerHTML = `<img class="social-icon-img" src="${ic.src}" style="width:var(--social-icon-size); height:var(--social-icon-size);" onerror="this.style.display='none'"><span style="display:block; font-size:12px;">${escapeHtml(ic.label)}</span>`;
+            cont.appendChild(a);
+        });
+        let size = document.getElementById('socialIconSize').value;
+        document.documentElement.style.setProperty('--social-icon-size', size+'px');
+    }
+    function renderFooterSocial(container) {
+        let cont = container.querySelector('#footerSocialIconsContainer');
+        if(!cont) return;
+        cont.innerHTML = '';
+        footerSocialIcons.forEach(ic => {
+            let a = document.createElement('a'); a.href = ic.link; a.target="_blank"; a.style.display = 'inline-block'; a.style.margin = '0 10px';
+            a.innerHTML = `<img class="footer-social-icon-img" src="${ic.src}" style="width:${document.getElementById('footerSocialIconSize').value}px; height:${document.getElementById('footerSocialIconSize').value}px; object-fit:contain;" onerror="this.style.display='none'"><span style="display:block; font-size:12px;">${escapeHtml(ic.label)}</span>`;
+            cont.appendChild(a);
+        });
+    }
+    function renderCounters(container) {
+        let grid = container.querySelector('#countersGrid');
+        if(!grid) return;
+        grid.innerHTML = '';
+        countersData.forEach(c => {
+            let div = document.createElement('div'); div.className = 'counter-item';
+            div.innerHTML = `<div class="counter-number">${escapeHtml(c.number)}</div><div class="counter-label">${escapeHtml(c.label)}</div>`;
+            grid.appendChild(div);
+        });
+        let numberSize = document.getElementById('countersNumberSize').value;
+        document.documentElement.style.setProperty('--counter-number-size', numberSize+'rem');
+    }
+    function applyStylesToPreview() { /* نفس الكود السابق */ 
+        document.documentElement.style.setProperty('--header-bg-light', document.getElementById('headerBgLight').value);
+        document.documentElement.style.setProperty('--header-text-light', document.getElementById('headerTextLight').value);
+        document.documentElement.style.setProperty('--header-bg-dark', document.getElementById('headerBgDark').value);
+        document.documentElement.style.setProperty('--header-text-dark', document.getElementById('headerTextDark').value);
+        let borderType = document.getElementById('headerBorderType').value;
+        let borderWidth = document.getElementById('headerBorderWidth').value;
+        let borderColor = document.getElementById('headerBorderColor').value;
+        document.documentElement.style.setProperty('--header-border', borderType === 'none' ? 'none' : `${borderWidth}px ${borderType} ${borderColor}`);
+        document.documentElement.style.setProperty('--header-shadow', document.getElementById('headerShadow').value);
+        document.documentElement.style.setProperty('--header-padding', document.getElementById('headerPadding').value);
+        document.documentElement.style.setProperty('--header-radius', document.getElementById('headerRadius').value+'px');
+        document.documentElement.style.setProperty('--header-font', document.getElementById('headerFont').value);
+        document.documentElement.style.setProperty('--hero-gap', document.getElementById('heroGap').value+'px');
+        document.documentElement.style.setProperty('--btn-work-bg', document.getElementById('btnWorkBg').value);
+        document.documentElement.style.setProperty('--btn-work-color', document.getElementById('btnWorkColor').value);
+        document.documentElement.style.setProperty('--btn-work-font-family', document.getElementById('btnWorkFont').value);
+        document.documentElement.style.setProperty('--btn-work-font-size', document.getElementById('btnWorkFontSize').value+'rem');
+        document.documentElement.style.setProperty('--btn-work-padding', document.getElementById('btnWorkPadding').value);
+        document.documentElement.style.setProperty('--btn-work-shadow', document.getElementById('btnWorkShadow').value);
+        document.documentElement.style.setProperty('--btn-work-radius', document.getElementById('btnWorkRadius').value+'px');
+        document.documentElement.style.setProperty('--btn-work-border-width', document.getElementById('btnWorkBorderWidth').value+'px');
+        document.documentElement.style.setProperty('--btn-work-border-style', document.getElementById('btnWorkBorderStyle').value);
+        document.documentElement.style.setProperty('--btn-work-border-color', document.getElementById('btnWorkBorderColor').value);
+        document.documentElement.style.setProperty('--btn-call-bg', document.getElementById('btnCallBg').value);
+        document.documentElement.style.setProperty('--btn-call-color', document.getElementById('btnCallColor').value);
+        document.documentElement.style.setProperty('--btn-call-font-family', document.getElementById('btnCallFont').value);
+        document.documentElement.style.setProperty('--btn-call-font-size', document.getElementById('btnCallFontSize').value+'rem');
+        document.documentElement.style.setProperty('--btn-call-padding', document.getElementById('btnCallPadding').value);
+        document.documentElement.style.setProperty('--btn-call-shadow', document.getElementById('btnCallShadow').value);
+        document.documentElement.style.setProperty('--btn-call-radius', document.getElementById('btnCallRadius').value+'px');
+        document.documentElement.style.setProperty('--btn-call-border', `${document.getElementById('btnCallBorderWidth').value}px ${document.getElementById('btnCallBorderStyle').value} ${document.getElementById('btnCallBorderColor').value}`);
+        document.documentElement.style.setProperty('--service-separator-color', document.getElementById('serviceSeparatorColor').value);
+        document.documentElement.style.setProperty('--service-separator-width', document.getElementById('serviceSeparatorWidth').value+'px');
+        document.documentElement.style.setProperty('--services-image-width', document.getElementById('servicesImageWidth').value);
+        document.documentElement.style.setProperty('--services-image-max-width', document.getElementById('servicesImageMaxWidth').value+'px');
+        document.documentElement.style.setProperty('--counter-title-size', document.getElementById('countersTitleSize').value+'rem');
+        document.documentElement.style.setProperty('--counter-desc-size', document.getElementById('countersDescSize').value+'rem');
+        document.documentElement.style.setProperty('--counter-bg-light', document.getElementById('counterBgLight').value);
+        document.documentElement.style.setProperty('--counter-bg-dark', document.getElementById('counterBgDark').value);
+        document.documentElement.style.setProperty('--counter-gap-bottom', document.getElementById('counterGapBottom').value+'px');
+        document.documentElement.style.setProperty('--counter-btn-margin-top', document.getElementById('counterBtnMarginTop').value+'px');
+        document.documentElement.style.setProperty('--form-width', document.getElementById('formWidth').value);
+        document.documentElement.style.setProperty('--form-padding', document.getElementById('formPadding').value);
+        document.documentElement.style.setProperty('--form-bg-light', document.getElementById('formBgLight').value);
+        document.documentElement.style.setProperty('--form-bg-dark', document.getElementById('formBgDark').value);
+        document.documentElement.style.setProperty('--form-text-light', document.getElementById('formTextLight').value);
+        document.documentElement.style.setProperty('--form-text-dark', document.getElementById('formTextDark').value);
+        document.documentElement.style.setProperty('--form-border-width', document.getElementById('formBorderWidth').value+'px');
+        document.documentElement.style.setProperty('--form-border-style', document.getElementById('formBorderStyle').value);
+        document.documentElement.style.setProperty('--form-border-color-light', document.getElementById('formBorderColorLight').value);
+        document.documentElement.style.setProperty('--form-border-color-dark', document.getElementById('formBorderColorDark').value);
+        document.documentElement.style.setProperty('--form-shadow', document.getElementById('formShadow').value);
+        document.documentElement.style.setProperty('--form-radius', document.getElementById('formRadius').value+'px');
+        document.documentElement.style.setProperty('--footer-bg-light', document.getElementById('footerBgLight').value);
+        document.documentElement.style.setProperty('--footer-bg-dark', document.getElementById('footerBgDark').value);
+        document.documentElement.style.setProperty('--footer-text-light', document.getElementById('footerTextLight').value);
+        document.documentElement.style.setProperty('--footer-text-dark', document.getElementById('footerTextDark').value);
+        document.documentElement.style.setProperty('--footer-title-color-light', document.getElementById('footerTitleLight').value);
+        document.documentElement.style.setProperty('--footer-title-color-dark', document.getElementById('footerTitleDark').value);
+        document.documentElement.style.setProperty('--footer-title-size', document.getElementById('footerTitleSize').value+'rem');
+        document.documentElement.style.setProperty('--footer-text-size', document.getElementById('footerTextSize').value+'rem');
+        document.documentElement.style.setProperty('--footer-social-icon-size', document.getElementById('footerSocialIconSize').value+'px');
+        document.documentElement.style.setProperty('--hero-image-size', document.getElementById('heroImageSize').value+'px');
+        document.documentElement.style.setProperty('--character-size', document.getElementById('characterSize').value+'px');
+        document.documentElement.style.setProperty('--badge-bg', document.getElementById('badgeBg').value);
+        document.documentElement.style.setProperty('--badge-color', document.getElementById('badgeColor').value);
+        let badgeEnabled = document.getElementById('badgeEnabled').value === 'true';
+        if(badgeEnabled) { document.documentElement.style.setProperty('--badge-padding', '6px 18px'); document.documentElement.style.setProperty('--badge-radius', '50px'); }
+        else { document.documentElement.style.setProperty('--badge-padding', '0'); document.documentElement.style.setProperty('--badge-radius', '0'); }
+    }
+    function attachPreviewEvents(container) {
+        let formSubmitBtn = container.querySelector('#formSubmitBtn');
+        if(formSubmitBtn) formSubmitBtn.onclick = () => {
+            let name = container.querySelector('#formName').value;
+            let email = container.querySelector('#formEmail').value;
+            let msg = container.querySelector('#formMessage').value;
+            let dest = container.querySelector('input[name="destination"]:checked').value;
+            if(!name || !email || !msg) { alert('يرجى ملء الحقول'); return; }
+            if(dest === 'whatsapp') {
+                let phone = document.getElementById('whatsappLink').value;
+                window.open(`https://wa.me/${phone}?text=الاسم: ${name}%0aالإيميل: ${email}%0aالرسالة: ${msg}`, '_blank');
+            } else {
+                let receiver = document.getElementById('receiverEmail').value;
+                window.location.href = `mailto:${receiver}?subject=رسالة من ${name}&body=${msg}%0a%0aالرد على: ${email}`;
+            }
+        };
+        let countersBtn = container.querySelector('#countersBtn');
+        if(countersBtn) countersBtn.onclick = () => {
+            let projectsLink = container.querySelector('.nav-link[data-page="projects"]');
+            if(projectsLink) projectsLink.click();
+        };
+        let navLinks = container.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.onclick = (e) => {
+                e.preventDefault();
+                let page = link.getAttribute('data-page');
+                container.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+                let targetPage = container.querySelector(`#${page}Page`);
+                if(targetPage) targetPage.classList.add('active-page');
+                navLinks.forEach(l => l.classList.remove('active-link'));
+                link.classList.add('active-link');
+            };
+        });
+        let workBtn = container.querySelector('#workBtn');
+        if(workBtn) workBtn.onclick = () => {
+            let projectsLink = container.querySelector('.nav-link[data-page="projects"]');
+            if(projectsLink) projectsLink.click();
+        };
+        let callBtn = container.querySelector('#callBtnHero');
+        if(callBtn) callBtn.onclick = () => {
+            let contactLink = container.querySelector('.nav-link[data-page="contact"]');
+            if(contactLink) contactLink.click();
+        };
+        let previewScrollDiv = document.getElementById('previewArea');
+        let header = container.querySelector('.glass-header');
+        let lastScrollTop = 0;
+        previewScrollDiv.addEventListener('scroll', function() {
+            let scrollTop = this.scrollTop;
+            if(scrollTop > lastScrollTop && scrollTop > 100) header.classList.add('hide');
+            else if(scrollTop < lastScrollTop) header.classList.remove('hide');
+            lastScrollTop = scrollTop;
+        });
+    }
+
+    // ---------------------- DASHBOARD MANAGERS (مع تحديث مباشر) ----------------------
+    function loadManagers() {
+        let servDiv = document.getElementById('servicesManager');
+        servDiv.innerHTML = '<h5>الخدمات (العنوان، النقاط كل نقطة في سطر)</h5>';
+        servicesListData.forEach((s,i)=> {
+            servDiv.innerHTML += `<div class="dynamic-item"><input type="text" id="s_title_${i}" value="${s.title.replace(/"/g,'&quot;')}" class="service-title-input"><textarea id="s_points_${i}" rows="2" class="service-points-input">${s.points.join('\n')}</textarea><button class="delete-btn" onclick="deleteService(${i})">حذف</button></div>`;
+        });
+        let testDiv = document.getElementById('testimonialsManager');
+        testDiv.innerHTML = '<h5>الشهادات (الاسم، الوظيفة، النص، التقييم 1-5، رابط الصورة)</h5>';
+        testimonialsData.forEach((t,i)=> {
+            testDiv.innerHTML += `<div class="dynamic-item"><input type="text" id="t_name_${i}" value="${t.name}" class="test-name-input"><input type="text" id="t_job_${i}" value="${t.job || ''}" class="test-job-input"><textarea id="t_text_${i}" rows="2" class="test-text-input">${t.text}</textarea><input type="number" id="t_rating_${i}" value="${t.rating}" class="test-rating-input"><input type="text" id="t_img_${i}" value="${t.image}" class="test-img-input"><button class="delete-btn" onclick="deleteTestimonial(${i})">حذف</button></div>`;
+        });
+        let clientDiv = document.getElementById('clientsManager');
+        clientDiv.innerHTML = '<h5>لوجوهات العملاء (رابط الصورة)</h5>';
+        clientsLogos.forEach((logo,i)=> {
+            clientDiv.innerHTML += `<div class="dynamic-item"><input type="text" id="c_logo_${i}" value="${logo}" class="client-logo-input"><button class="delete-btn" onclick="deleteClient(${i})">حذف</button></div>`;
+        });
+        let socialDiv = document.getElementById('socialIconsManager');
+        socialDiv.innerHTML = '<h5>أيقونات سوشيال أسفل الفورم (رابط الصورة، الرابط، التسمية)</h5>';
+        socialIconsList.forEach((ic,i)=> {
+            socialDiv.innerHTML += `<div class="dynamic-item"><input type="text" id="s_src_${i}" value="${ic.src}" class="social-src-input"><input type="text" id="s_link_${i}" value="${ic.link}" class="social-link-input"><input type="text" id="s_label_${i}" value="${ic.label}" class="social-label-input"><button class="delete-btn" onclick="deleteSocial(${i})">حذف</button></div>`;
+        });
+        let footerDiv = document.getElementById('footerSocialIconsManager');
+        footerDiv.innerHTML = '<h5>أيقونات الفوتر (صورة، رابط، تسمية)</h5>';
+        footerSocialIcons.forEach((ic,i)=> {
+            footerDiv.innerHTML += `<div class="dynamic-item"><input type="text" id="f_src_${i}" value="${ic.src}" class="footer-src-input"><input type="text" id="f_link_${i}" value="${ic.link}" class="footer-link-input"><input type="text" id="f_label_${i}" value="${ic.label}" class="footer-label-input"><button class="delete-btn" onclick="deleteFooterSocial(${i})">حذف</button></div>`;
+        });
+        let countersDiv = document.getElementById('countersManager');
+        countersDiv.innerHTML = '<h5>العدادات (الرقم، التسمية)</h5>';
+        countersData.forEach((c,i)=> {
+            countersDiv.innerHTML += `<div class="dynamic-item"><input type="text" id="c_num_${i}" value="${c.number}" class="counter-num-input"><input type="text" id="c_label_${i}" value="${c.label}" class="counter-label-input"><button class="delete-btn" onclick="deleteCounter(${i})">حذف</button></div>`;
+        });
+        // إضافة مستمعات الأحداث للعناصر الديناميكية (للتحديث المباشر)
+        document.querySelectorAll('#servicesManager input, #servicesManager textarea').forEach(el => {
+            el.removeEventListener('input', updateFromDynamic);
+            el.addEventListener('input', updateFromDynamic);
+        });
+        document.querySelectorAll('#testimonialsManager input, #testimonialsManager textarea').forEach(el => {
+            el.removeEventListener('input', updateFromDynamic);
+            el.addEventListener('input', updateFromDynamic);
+        });
+        document.querySelectorAll('#clientsManager input').forEach(el => {
+            el.removeEventListener('input', updateFromDynamic);
+            el.addEventListener('input', updateFromDynamic);
+        });
+        document.querySelectorAll('#socialIconsManager input').forEach(el => {
+            el.removeEventListener('input', updateFromDynamic);
+            el.addEventListener('input', updateFromDynamic);
+        });
+        document.querySelectorAll('#footerSocialIconsManager input').forEach(el => {
+            el.removeEventListener('input', updateFromDynamic);
+            el.addEventListener('input', updateFromDynamic);
+        });
+        document.querySelectorAll('#countersManager input').forEach(el => {
+            el.removeEventListener('input', updateFromDynamic);
+            el.addEventListener('input', updateFromDynamic);
+        });
+    }
+    
+    function updateFromDynamic() {
+        // تحديث المصفوفات من حقول الإدخال الديناميكية
+        updateServicesFromInputs();
+        updateTestimonialsFromInputs();
+        updateClientsFromInputs();
+        updateSocialIconsFromInputs();
+        updateFooterSocialFromInputs();
+        updateCountersFromInputs();
+        renderPreview();
+    }
+    
+    function updateServicesFromInputs() {
+        let newServices = [];
+        let items = document.querySelectorAll('#servicesManager .dynamic-item');
+        items.forEach((item, idx) => {
+            let titleInput = item.querySelector('.service-title-input');
+            let pointsTextarea = item.querySelector('.service-points-input');
+            if(titleInput && titleInput.value.trim()) {
+                let points = pointsTextarea ? pointsTextarea.value.split('\n').filter(l=>l.trim()) : [];
+                newServices.push({ title: titleInput.value, points: points });
+            }
+        });
+        if(newServices.length) servicesListData = newServices;
+    }
+    function updateTestimonialsFromInputs() {
+        let newTests = [];
+        let items = document.querySelectorAll('#testimonialsManager .dynamic-item');
+        items.forEach((item, idx) => {
+            let nameInput = item.querySelector('.test-name-input');
+            if(nameInput && nameInput.value.trim()) {
+                newTests.push({
+                    name: nameInput.value,
+                    job: item.querySelector('.test-job-input')?.value || '',
+                    text: item.querySelector('.test-text-input')?.value || '',
+                    rating: parseInt(item.querySelector('.test-rating-input')?.value) || 5,
+                    image: item.querySelector('.test-img-input')?.value || ''
+                });
+            }
+        });
+        if(newTests.length) testimonialsData = newTests;
+    }
+    function updateClientsFromInputs() {
+        let newClients = [];
+        let items = document.querySelectorAll('#clientsManager .dynamic-item');
+        items.forEach(item => {
+            let input = item.querySelector('.client-logo-input');
+            if(input && input.value.trim()) newClients.push(input.value);
+        });
+        if(newClients.length) clientsLogos = newClients;
+    }
+    function updateSocialIconsFromInputs() {
+        let newSocial = [];
+        let items = document.querySelectorAll('#socialIconsManager .dynamic-item');
+        items.forEach(item => {
+            let src = item.querySelector('.social-src-input')?.value;
+            if(src && src.trim()) {
+                newSocial.push({
+                    src: src,
+                    link: item.querySelector('.social-link-input')?.value || '#',
+                    label: item.querySelector('.social-label-input')?.value || ''
+                });
+            }
+        });
+        if(newSocial.length) socialIconsList = newSocial;
+    }
+    function updateFooterSocialFromInputs() {
+        let newFooter = [];
+        let items = document.querySelectorAll('#footerSocialIconsManager .dynamic-item');
+        items.forEach(item => {
+            let src = item.querySelector('.footer-src-input')?.value;
+            if(src && src.trim()) {
+                newFooter.push({
+                    src: src,
+                    link: item.querySelector('.footer-link-input')?.value || '#',
+                    label: item.querySelector('.footer-label-input')?.value || ''
+                });
+            }
+        });
+        if(newFooter.length) footerSocialIcons = newFooter;
+    }
+    function updateCountersFromInputs() {
+        let newCounters = [];
+        let items = document.querySelectorAll('#countersManager .dynamic-item');
+        items.forEach(item => {
+            let num = item.querySelector('.counter-num-input')?.value;
+            if(num && num.trim()) {
+                newCounters.push({
+                    number: num,
+                    label: item.querySelector('.counter-label-input')?.value || ''
+                });
+            }
+        });
+        if(newCounters.length) countersData = newCounters;
+    }
+    
+    window.deleteService = (idx) => { servicesListData.splice(idx,1); renderPreview(); loadManagers(); };
+    window.deleteTestimonial = (idx) => { testimonialsData.splice(idx,1); renderPreview(); loadManagers(); };
+    window.deleteClient = (idx) => { clientsLogos.splice(idx,1); renderPreview(); loadManagers(); };
+    window.deleteSocial = (idx) => { socialIconsList.splice(idx,1); renderPreview(); loadManagers(); };
+    window.deleteFooterSocial = (idx) => { footerSocialIcons.splice(idx,1); renderPreview(); loadManagers(); };
+    window.deleteCounter = (idx) => { countersData.splice(idx,1); renderPreview(); loadManagers(); };
+    
+    function saveManagersData() {
+        updateServicesFromInputs();
+        updateTestimonialsFromInputs();
+        updateClientsFromInputs();
+        updateSocialIconsFromInputs();
+        updateFooterSocialFromInputs();
+        updateCountersFromInputs();
+    }
+    function saveToLocal() { 
+        saveManagersData(); 
+        localStorage.setItem('yasirCompleteDataFinal5', JSON.stringify({ servicesListData, testimonialsData, clientsLogos, socialIconsList, footerSocialIcons, countersData })); 
+        alert('تم حفظ كل الإعدادات'); 
+    }
+    function loadFromLocal() { 
+        let d = localStorage.getItem('yasirCompleteDataFinal5'); 
+        if(d) { 
+            let data = JSON.parse(d); 
+            servicesListData = data.servicesListData; 
+            testimonialsData = data.testimonialsData; 
+            clientsLogos = data.clientsLogos; 
+            socialIconsList = data.socialIconsList; 
+            footerSocialIcons = data.footerSocialIcons; 
+            countersData = data.countersData; 
+        } 
+        renderPreview(); 
+        loadManagers(); 
+    }
+    
+    function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    
+    // Dashboard controls
+    document.getElementById('dashboardFloatingBtn').onclick = () => { document.getElementById('dashboardArea').classList.toggle('open'); };
+    document.getElementById('saveAllBtn').onclick = () => { saveManagersData(); renderPreview(); saveToLocal(); document.getElementById('dashboardArea').classList.remove('open'); };
+    document.getElementById('closeDashboardBtn').onclick = () => { document.getElementById('dashboardArea').classList.remove('open'); };
+    document.getElementById('addCounterBtn').onclick = () => { countersData.push({ number: "100+", label: "جديد" }); renderPreview(); loadManagers(); };
+    document.getElementById('addServiceBtn').onclick = () => { servicesListData.push({ title: "خدمة جديدة", points: ["نقطة"] }); renderPreview(); loadManagers(); };
+    document.getElementById('addTestimonialBtn').onclick = () => { testimonialsData.push({ name: "اسم", job: "وظيفة", text: "نص", rating: 5, image: "" }); renderPreview(); loadManagers(); };
+    document.getElementById('addClientBtn').onclick = () => { clientsLogos.push("https://placehold.co/150x60/cccccc/white?text=عميل"); renderPreview(); loadManagers(); };
+    document.getElementById('addSocialIconBtn').onclick = () => { socialIconsList.push({ src: "https://placehold.co/40x40", link: "#", label: "وسم" }); renderPreview(); loadManagers(); };
+    document.getElementById('addFooterSocialBtn').onclick = () => { footerSocialIcons.push({ src: "https://placehold.co/40x40", link: "#", label: "وسم" }); renderPreview(); loadManagers(); };
+    
+    // زر الدارك مود
+    const darkModeBtn = document.getElementById('darkModeToggleBtn');
+    const previewDiv = document.getElementById('previewArea');
+    const darkModeIcon = document.getElementById('darkModeIcon');
+    darkModeBtn.onclick = () => {
+        previewDiv.classList.toggle('dark-mode');
+        const isDark = previewDiv.classList.contains('dark-mode');
+        darkModeIcon.src = isDark ? 'https://img.icons8.com/ios-filled/50/ffffff/sun--v1.png' : 'https://img.icons8.com/ios-filled/50/ffffff/moon-symbol.png';
+        renderPreview();
+    };
+    
+    attachLiveUpdates();
+    loadFromLocal();
+    renderPreview();
+</script>
+</body>
+</html>
