@@ -6,7 +6,7 @@
     <title>ياسر إسماعيل - بورتفوليو متكامل التحكم</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* تعريف خط ثمانية - تم تضمينه مباشرة في CSS */
+        /* تعريف خط ثمانية */
         @font-face {
             font-family: 'Thmanyah Sans';
             src: url('fonts/thmanyahsans-Bold.otf') format('opentype');
@@ -166,8 +166,13 @@
         .footer-social-icon-img { width: var(--footer-social-icon-size); height: var(--footer-social-icon-size); object-fit: contain; }
         .page { display: none; }
         .page.active-page { display: block; }
-        #dashboardFloatingBtn { position: fixed; bottom: 25px; right: 25px; background: #25e191; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; z-index: 1002; box-shadow: 0 4px 12px black; transition: 0.3s; color: black; }
-        #dashboardFloatingBtn:hover { transform: scale(1.05); }
+        
+        /* زر الداشبورد - يظهر فقط في وضع التحرير */
+        .dashboard-float-btn {
+            position: fixed; bottom: 25px; right: 25px; background: #25e191; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; z-index: 1002; box-shadow: 0 4px 12px black; transition: 0.3s; color: black;
+        }
+        .dashboard-float-btn:hover { transform: scale(1.05); }
+        
         @media (max-width: 800px) { .dashboard-area.open { width: 260px; } .services-new-container { flex-direction: column; } .form-social-section { flex-direction: column; } }
     </style>
 </head>
@@ -179,7 +184,7 @@
         <button id="saveAllBtn">💾 حفظ جميع التغييرات</button>
         <button id="closeDashboardBtn" style="background:#555;">✖️ إغلاق الداشبورد</button>
         
-        <!-- 1. HEADER -->
+        <!-- باقي محتوى الداشبورد كما هو (اختصاراً للتكرار) -->
         <h4>📐 الهيدر</h4>
         <div class="section-group">
             <label>خلفية فاتح</label><input type="color" id="headerBgLight" value="#ffffff4d">
@@ -197,7 +202,6 @@
             <label>الظل (box-shadow)</label><input type="text" id="headerShadow" value="0 4px 15px rgba(0,0,0,0.1)">
         </div>
         
-        <!-- 2. HERO -->
         <h4>🎨 الهيرو</h4>
         <div class="section-group">
             <label>نص الترحيب (Badge)</label><input type="text" id="heroGreetingText" value="✨ مرحباً، أنا">
@@ -212,7 +216,6 @@
             <label>المسافة بين الصورة والمحتوى (px)</label><input type="number" id="heroGap" value="60">
         </div>
         
-        <!-- 3. BUTTONS -->
         <h4>🔘 إعدادات الأزرار</h4>
         <div class="section-group">
             <label>لون الخلفية العام للأزرار</label><input type="color" id="btnWorkBg" value="#25e191">
@@ -242,7 +245,6 @@
             <label>لون الحدود</label><input type="color" id="btnCallBorderColor" value="#25e191">
         </div>
         
-        <!-- 4. ACHIEVEMENTS -->
         <h4>📊 سيكشن الإنجازات</h4>
         <div class="section-group">
             <label>عنوان السيكشن</label><input type="text" id="countersTitle" value="إنجازاتي">
@@ -261,7 +263,6 @@
             <label>نص زر السيكشن</label><input type="text" id="countersBtnText" value="اكتشف المزيد">
         </div>
         
-        <!-- 5. SERVICES -->
         <h4>🖼️ سيكشن الخدمات</h4>
         <div class="section-group">
             <label>عنوان السيكشن</label><input type="text" id="servicesTitle" value="🤔 أيه اللي أقدر أقدمه لك؟">
@@ -273,7 +274,6 @@
             <div id="servicesManager"></div><button id="addServiceBtn">➕ إضافة خدمة جديدة</button>
         </div>
         
-        <!-- 6. TESTIMONIALS -->
         <h4>⭐ الشهادات</h4>
         <div class="section-group">
             <label>عنوان السيكشن</label><input type="text" id="testimonialsTitle" value="🗣️ اللي دخلوا دماغي قالوا ايه">
@@ -282,14 +282,12 @@
             <div id="testimonialsManager"></div><button id="addTestimonialBtn">➕ إضافة شهادة</button>
         </div>
         
-        <!-- 7. CLIENTS SLIDER -->
         <h4>🏢 شريط العملاء</h4>
         <div class="section-group">
             <label>ارتفاع اللوجو (px)</label><input type="range" id="clientLogoHeight" min="30" max="120" value="60">
             <div id="clientsManager"></div><button id="addClientBtn">➕ إضافة لوجو</button>
         </div>
         
-        <!-- 8. CONTACT FORM -->
         <h4>📧 سيكشن التواصل (فورم)</h4>
         <div class="section-group">
             <label>عنوان السيكشن</label><input type="text" id="formSectionTitle" value="📬 LET'S WORK TOGETHER">
@@ -314,7 +312,6 @@
             <label>حجم أيقونات السوشيال (px)</label><input type="number" id="socialIconSize" value="40">
         </div>
         
-        <!-- 9. FOOTER -->
         <h4>📞 الفوتر</h4>
         <div class="section-group">
             <label>خلفية الفوتر - فاتح</label><input type="color" id="footerBgLight" value="#f8f9fa">
@@ -335,14 +332,12 @@
             <div id="footerSocialIconsManager"></div><button id="addFooterSocialBtn">➕ إضافة أيقون سوشيال للفوتر (صورة)</button>
         </div>
         
-        <!-- 10. CHARACTER -->
         <h4>🎭 الكاراكتر</h4>
         <div class="section-group">
             <label>رابط صورة الكاراكتر</label><input type="text" id="characterImgUrl" value="https://placehold.co/300x300/25e191/white?text=ياسر">
             <label>حجم الكاراكتر (px)</label><input type="number" id="characterSize" value="90">
         </div>
         
-        <!-- 11. خط العناوين -->
         <h4>🔤 خط العناوين الرئيسية</h4>
         <div class="section-group">
             <label>اختر خط العناوين (مثل عناوين السيكشنات)</label>
@@ -354,11 +349,21 @@
         </div>
     </div>
 </div>
-<div id="dashboardFloatingBtn">🔧</div>
+<!-- زر الداشبورد - يظهر فقط إذا الرابط يحتوي على ?edit=true -->
+<div class="dashboard-float-btn" id="dashboardFloatingBtn" style="display: none;">🔧</div>
 <button class="dark-mode-btn" id="darkModeToggleBtn"><img id="darkModeIcon" src="https://img.icons8.com/ios-filled/50/ffffff/moon-symbol.png" alt="dark mode"></button>
 
 <script>
-    // ---------------------- DATA MODELS ----------------------
+    // ---------------------- التحقق من صلاحية عرض الداشبورد ----------------------
+    // لا يظهر زر الداشبورد إلا إذا كان الرابط يحتوي على ?edit=true
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEditMode = urlParams.has('edit') && urlParams.get('edit') === 'true';
+    
+    if (isEditMode) {
+        document.getElementById('dashboardFloatingBtn').style.display = 'flex';
+    }
+    
+    // ---------------------- DATA MODELS (نفس السابق) ----------------------
     let servicesListData = [
         { title: "2D & 3D MOTION GRAPHICS", points: ["Visual Development", "Concept Illustration", "Motion Choreography"] },
         { title: "VIDEO EDITING", points: ["Editing", "Color Grading", "Sound Design"] }
@@ -875,9 +880,13 @@
     
     function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
     
-    document.getElementById('dashboardFloatingBtn').onclick = () => { document.getElementById('dashboardArea').classList.toggle('open'); };
-    document.getElementById('saveAllBtn').onclick = () => { saveManagersData(); renderPreview(); saveToLocal(); document.getElementById('dashboardArea').classList.remove('open'); };
-    document.getElementById('closeDashboardBtn').onclick = () => { document.getElementById('dashboardArea').classList.remove('open'); };
+    // Dashboard controls (تظهر فقط في وضع التحرير)
+    if (isEditMode) {
+        document.getElementById('dashboardFloatingBtn').onclick = () => { document.getElementById('dashboardArea').classList.toggle('open'); };
+        document.getElementById('saveAllBtn').onclick = () => { saveManagersData(); renderPreview(); saveToLocal(); document.getElementById('dashboardArea').classList.remove('open'); };
+        document.getElementById('closeDashboardBtn').onclick = () => { document.getElementById('dashboardArea').classList.remove('open'); };
+    }
+    
     document.getElementById('addCounterBtn').onclick = () => { countersData.push({ number: "100+", label: "جديد" }); renderPreview(); loadManagers(); };
     document.getElementById('addServiceBtn').onclick = () => { servicesListData.push({ title: "خدمة جديدة", points: ["نقطة"] }); renderPreview(); loadManagers(); };
     document.getElementById('addTestimonialBtn').onclick = () => { testimonialsData.push({ name: "اسم", job: "وظيفة", text: "نص", rating: 5, image: "" }); renderPreview(); loadManagers(); };
